@@ -3,7 +3,9 @@ package com.example.demo;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -64,7 +66,7 @@ public class DemoController {
                     String key = HttpHeaders.CONTENT_TYPE;
                     String value = httpResponse.getFirstHeader(key).getValue();
                     HttpHeaders httpHeaders = new HttpHeaders();
-                    httpHeaders.set(key, value);
+                    httpHeaders.add(key, value);
                     String body = EntityUtils.toString(httpResponse.getEntity());
                     return new ResponseEntity<String>(body, httpHeaders, HttpStatus.SC_OK);
                 }
