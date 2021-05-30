@@ -1,8 +1,5 @@
 # spring-headers-order
 
-Spring Boot + Jetty でヘッダー順序維持を検証する.  
-Server を Jetty に変更して、baseRequest からリクエストヘッダーを取得する.  
-
 ## API
 
 ### `/headers`
@@ -35,13 +32,13 @@ curl のリクエストヘッダーとレスポンスを見比べることで, �
 > Foo: 3
 > Bar: 4
 >
-< HTTP/1.1 200 OK
-< Date: Sun, 30 May 2021 10:53:00 GMT
+< HTTP/1.1 200
 < Content-Type: application/json
 < Transfer-Encoding: chunked
+< Date: Sat, 01 May 2021 03:08:51 GMT
 <
 * Connection #0 to host localhost left intact
-[ [ "Host", "localhost:8080" ], [ "User-Agent", "curl/7.64.1" ], [ "Accept", "*/*" ], [ "Hoge", "1" ], [ "Fuga", "2" ], [ "Foo", "3" ], [ "Bar", "4" ] ]* Closing connection 0
+[ [ "host", "localhost:8080" ], [ "user-agent", "curl/7.64.1" ], [ "accept", "*/*" ], [ "hoge", "1" ], [ "fuga", "2" ], [ "foo", "3" ], [ "bar", "4" ] ]* Closing connection 0
 ```
 
 ### `/proxy` ヘッダー重複なし
@@ -60,13 +57,13 @@ curl のリクエストヘッダーとレスポンスを見比べることで, �
 > Foo: 3
 > Bar: 4
 >
-< HTTP/1.1 200 OK
-< Date: Sun, 30 May 2021 10:53:22 GMT
+< HTTP/1.1 200
 < Content-Type: application/json
 < Content-Length: 152
+< Date: Sat, 01 May 2021 03:08:04 GMT
 <
 * Connection #0 to host localhost left intact
-[ [ "Host", "localhost:8080" ], [ "User-Agent", "curl/7.64.1" ], [ "Accept", "*/*" ], [ "Hoge", "1" ], [ "Fuga", "2" ], [ "Foo", "3" ], [ "Bar", "4" ] ]* Closing connection 0
+[ [ "host", "localhost:8080" ], [ "user-agent", "curl/7.64.1" ], [ "accept", "*/*" ], [ "hoge", "1" ], [ "fuga", "2" ], [ "foo", "3" ], [ "bar", "4" ] ]* Closing connection 0
 ```
 
 ### `/headers` ヘッダー重複あり
@@ -86,13 +83,13 @@ curl のリクエストヘッダーとレスポンスを見比べることで, �
 > Bar: 4
 > Foo: 5
 >
-< HTTP/1.1 200 OK
-< Date: Sun, 30 May 2021 10:53:46 GMT
+< HTTP/1.1 200
 < Content-Type: application/json
 < Transfer-Encoding: chunked
+< Date: Sat, 01 May 2021 03:09:40 GMT
 <
 * Connection #0 to host localhost left intact
-[ [ "Host", "localhost:8080" ], [ "User-Agent", "curl/7.64.1" ], [ "Accept", "*/*" ], [ "Hoge", "1" ], [ "Fuga", "2" ], [ "Foo", "3" ], [ "Bar", "4" ], [ "Foo", "5" ] ]* Closing connection 0
+[ [ "host", "localhost:8080" ], [ "user-agent", "curl/7.64.1" ], [ "accept", "*/*" ], [ "hoge", "1" ], [ "fuga", "2" ], [ "foo", "3" ], [ "foo", "5" ], [ "bar", "4" ] ]* Closing connection 0
 ```
 
 ### `/proxy` ヘッダー重複あり
@@ -112,45 +109,22 @@ curl のリクエストヘッダーとレスポンスを見比べることで, �
 > Bar: 4
 > Foo: 5
 >
-< HTTP/1.1 200 OK
-< Date: Sun, 30 May 2021 10:54:07 GMT
+< HTTP/1.1 200
 < Content-Type: application/json
 < Content-Length: 168
+< Date: Sat, 01 May 2021 03:10:16 GMT
 <
 * Connection #0 to host localhost left intact
-[ [ "Host", "localhost:8080" ], [ "User-Agent", "curl/7.64.1" ], [ "Accept", "*/*" ], [ "Hoge", "1" ], [ "Fuga", "2" ], [ "Foo", "3" ], [ "Bar", "4" ], [ "Foo", "5" ] ]* Closing connection 0
-```
-
-### `/proxy` ヘッダー重複あり
-
-```
-❯ curl http://localhost:8080/proxy -H 'Hoge: 1' -H 'Fuga: 2' -H 'Foo: 3' -H 'Bar: 4' -H 'Foo: 5' -H 'bar: 6' -H 'hOGE: 7' -v
-*   Trying ::1...
-* TCP_NODELAY set
-* Connected to localhost (::1) port 8080 (#0)
-> GET /proxy HTTP/1.1
-> Host: localhost:8080
-> User-Agent: curl/7.64.1
-> Accept: */*
-> Hoge: 1
-> Fuga: 2
-> Foo: 3
-> Bar: 4
-> Foo: 5
-> bar: 6
-> hOGE: 7
->
-< HTTP/1.1 200 OK
-< Date: Sun, 30 May 2021 10:52:42 GMT
-< Content-Type: application/json
-< Content-Length: 201
-<
-* Connection #0 to host localhost left intact
-[ [ "Host", "localhost:8080" ], [ "User-Agent", "curl/7.64.1" ], [ "Accept", "*/*" ], [ "Hoge", "1" ], [ "Fuga", "2" ], [ "Foo", "3" ], [ "Bar", "4" ], [ "Foo", "5" ], [ "bar", "6" ], [ "hOGE", "7" ] ]* Closing connection 0
+[ [ "host", "localhost:8080" ], [ "user-agent", "curl/7.64.1" ], [ "accept", "*/*" ], [ "hoge", "1" ], [ "fuga", "2" ], [ "foo", "3" ], [ "foo", "5" ], [ "bar", "4" ] ]* Closing connection 0
 ```
 
 ## Conclusion
 
-* ヘッダー順序が維持される
-  * 同名ヘッダーの値もマージされず状態が保たれる
-  * ヘッダー名の大文字・小文字も状態が保たれる
+* ヘッダー名が小文字になってしまう
+  * すべて HTTP/1.1 とみなし、ヘッダー名を正規化することはできる
+    * `accept-encoding` => `Accept-Encoding`
+      * https://golang.org/pkg/net/http/#CanonicalHeaderKey
+* ヘッダー重複なしのとき、ヘッダー順を維持することができる
+* ヘッダー重複ありのとき、ヘッダー順を維持することができない
+  * 同名のヘッダーは、その値がマージされる
+  * リクエストヘッダーの重複は通常はないはず

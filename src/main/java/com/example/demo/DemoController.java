@@ -1,7 +1,6 @@
 package com.example.demo;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +13,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.protocol.HttpProcessorBuilder;
 import org.apache.http.util.EntityUtils;
+import org.eclipse.jetty.http.HttpField;
+import org.eclipse.jetty.http.HttpFields;
+import org.eclipse.jetty.server.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -31,16 +33,14 @@ public class DemoController {
     @ResponseBody
     private List<List<String>> getHeaders() {
         List<List<String>> headers = new ArrayList<>();
+        Request baseRequest = Request.getBaseRequest(request);
+        HttpFields fields = baseRequest.getHttpFields();
 
-        Enumeration<String> keys = request.getHeaderNames();
-        while (keys.hasMoreElements()) {
-            String key = keys.nextElement();
-            Enumeration<String> values = request.getHeaders(key);
-            while (values.hasMoreElements()) {
-                String value = values.nextElement();
+        for (HttpField field : fields) {
+            if (field != null) {
                 List<String> kv = new ArrayList<>();
-                kv.add(key);
-                kv.add(value);
+                kv.add(field.getName());
+                kv.add(field.getValue());
                 headers.add(kv);
             }
         }
