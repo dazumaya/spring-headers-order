@@ -121,7 +121,7 @@ curl のリクエストヘッダーとレスポンスを見比べることで, �
 [ [ "Host", "localhost:8080" ], [ "User-Agent", "curl/7.64.1" ], [ "Accept", "*/*" ], [ "Hoge", "1" ], [ "Fuga", "2" ], [ "Foo", "3" ], [ "Bar", "4" ], [ "Foo", "5" ] ]* Closing connection 0
 ```
 
-### `/proxy` ヘッダー重複あり
+### `/proxy` ヘッダー重複あり (大文字・小文字混在)
 
 ```
 ❯ curl http://localhost:8080/proxy -H 'Hoge: 1' -H 'Fuga: 2' -H 'Foo: 3' -H 'Bar: 4' -H 'Foo: 5' -H 'bar: 6' -H 'hOGE: 7' -v
